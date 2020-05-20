@@ -24,7 +24,7 @@ class ToDo
             $db->exec("DROP DATABASE IF EXISTS " . $dbname . ";");
             $db->exec("CREATE DATABASE " . $dbname . ";");
             $db->exec("USE " . $dbname . ";");
-            $db->exec("CREATE TABLE fach (fachKuerzel VARCHAR(10) PRIMARY KEY, fachBez VARCHAR(50)) ENGINE=InnoDB;");
+            $db->exec("CREATE TABLE fach (fachKuerzel VARCHAR(10) PRIMARY KEY, fachBez VARCHAR(60)) ENGINE=InnoDB;");
             $db->exec("CREATE TABLE todo (fach VARCHAR(10) , aufgabe VARCHAR(50),gemacht BOOL,deadline DATE ,PRIMARY KEY (fach,aufgabe),FOREIGN KEY (fach) REFERENCES fach (fachKuerzel)) ENGINE=InnoDB;");
              // Datenbankverbindung schließen
             $db = null;
@@ -39,6 +39,17 @@ class ToDo
             // Datenbank verbinden
             $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
             $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('AM', 'Angewandet Mathematik');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('D', 'Deutsch');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('E', 'Englisch');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('NW', 'Naturwissenschaften');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('AUDT', 'Audiotechnik ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('MEDT', 'Medientechnik ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('NWTK', 'Netzwerktechnik ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('SYT', 'Systemtechnik ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('INSY', 'Informationssysteme');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('INFI', 'Informatik und Informationssysteme ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('RK', 'Religion Katholisch ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('SEW', 'Softwareentwicklung ');");
             $db = null;
             echo("Everything's fine");
         } catch (PDOException $e) {
