@@ -1,5 +1,5 @@
 <?php
-class ToDo
+class ToDoList
 {
     private $host;
     private $dbname;
