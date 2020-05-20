@@ -63,7 +63,15 @@ class ToDo
 
     }
     public function getAllSubjects(){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $db->exec("SELECT fach, aufgabek, gemacht, deadline FROM todo;");
+            $db = null;
+            echo("Everything's fine");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
     public function getAllToDos(){
 
