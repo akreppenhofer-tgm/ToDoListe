@@ -5,6 +5,7 @@ class ToDo
     private $dbname;
     private $user;
     private $password;
+    private $dcs;
     public function setup($host, $dbname, $user, $password)
     {
         $this->host = $host;
@@ -12,6 +13,7 @@ class ToDo
         $this->user = $user;
         $this->password = $password;
         $dcs = "mysql:host=$host;charset=utf8mb4";
+        $this->dcs = $dcs;
         $options = [
             PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
@@ -30,5 +32,26 @@ class ToDo
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
+    }
+    public function AddAllSubjects(){
+
+    }
+    public function  AddSubject($kuerzel,$bez){
+
+    }
+    public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
+
+    }
+    public function getAllSubjects(){
+
+    }
+    public function getAllToDos(){
+
+    }
+    public function getSubject($kuerzel){
+
+    }
+    public function getToDo($fach,$aufgabe){
+
     }
 }
