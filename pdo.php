@@ -57,10 +57,29 @@ class ToDoList
         }
     }
     public function  AddSubject($kuerzel,$bez){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $statement = $db->prepare("INSERT INTO fach (fachKuerzel, fachBez) VALUES (?,?);");
+            $statement -> execute ( array ( "'".$kuerzel ."'", "'".$bez ."'" ) ) ;
+            $db = null;
+            echo("Everything's fine");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            // TODO statement ist noch nicht fertig
+            $statement = $db->prepare("INSERT INTO todo (fach, aufgabe,) VALUES (?,?,?);");
+            $statement -> execute ( array ( "'".$kuerzel ."'", "'".$bez ."'" ) ) ;
+            $db = null;
+            echo("Everything's fine");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
     public function getAllSubjects(){
         try {
