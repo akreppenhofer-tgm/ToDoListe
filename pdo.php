@@ -13,7 +13,6 @@ class ToDo
         $this->user = $user;
         $this->password = $password;
         $dcs = "mysql:host=$host;charset=utf8mb4";
-        $this->dcs = $dcs;
         $options = [
             PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
@@ -21,20 +20,30 @@ class ToDo
         try {
             // Datenbank verbinden
             $db = new PDO($dcs, $user, $password, $options);
+            // Datenbank erstellen
             $db->exec("DROP DATABASE IF EXISTS " . $dbname . ";");
             $db->exec("CREATE DATABASE " . $dbname . ";");
             $db->exec("USE " . $dbname . ";");
-            $db->exec("CREATE TABLE fach (fachKuerzel VARCHAR(10) PRIMARY KEY, FachBez VARCHAR(50)) ENGINE=InnoDB;");
+            $db->exec("CREATE TABLE fach (fachKuerzel VARCHAR(10) PRIMARY KEY, fachBez VARCHAR(50)) ENGINE=InnoDB;");
             $db->exec("CREATE TABLE todo (fach VARCHAR(10) , aufgabe VARCHAR(50),gemacht BOOL,deadline DATE ,PRIMARY KEY (fach,aufgabe),FOREIGN KEY (fach) REFERENCES fach (fachKuerzel)) ENGINE=InnoDB;");
              // Datenbankverbindung schließen
             $db = null;
+            $this->dcs = "mysql:host=$host;dbname=$this->dbname;charset=utf8mb4";
             echo("Everything's fine");
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
     public function AddAllSubjects(){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('AM', 'Angewandet Mathematik');");
+            $db = null;
+            echo("Everything's fine");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
     public function  AddSubject($kuerzel,$bez){
 
