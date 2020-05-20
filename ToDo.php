@@ -44,7 +44,8 @@ class ToDo
      * ob die deadline überschritten wurde
      */
     public function isOverdue() {
-        timeJ
+        if($this->deadline < time()) return true;
+        else return false;
     }
 
 
