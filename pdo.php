@@ -1,4 +1,6 @@
 <?php
+require_once 'ToDo.php';
+
 class ToDoList
 {
     private $host;
@@ -6,20 +8,20 @@ class ToDoList
     private $user;
     private $password;
     private $dcs;
+    private static $options = [
+        PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
+    ];
     public function setup($host, $dbname, $user, $password)
     {
         $this->host = $host;
         $this->dbname = $dbname;
         $this->user = $user;
         $this->password = $password;
-        $dcs = "mysql:host=$host;charset=utf8mb4";
-        $options = [
-            PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
-        ];
+        $dcs = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
         try {
             // Datenbank verbinden
-            $db = new PDO($dcs, $user, $password, $options);
+            $db = new PDO($dcs, $user, $password, self::$options);
             // Datenbank erstellen
             $db->exec("DROP DATABASE IF EXISTS " . $dbname . ";");
             $db->exec("CREATE DATABASE " . $dbname . ";");
