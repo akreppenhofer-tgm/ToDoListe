@@ -33,7 +33,9 @@ class ToDoList
             $this->dcs = "mysql:host=$host;dbname=$this->dbname;charset=utf8mb4";
             echo("Everything's fine");
         } catch (PDOException $e) {
+            echo "setup: ";
             echo $e->getMessage();
+            echo $e;
         }
     }
     public function AddAllSubjects(){
@@ -55,7 +57,9 @@ class ToDoList
             $db = null;
             echo("Everything's fine");
         } catch (PDOException $e) {
+            echo "AddAllSubjects: ";
             echo $e->getMessage();
+            echo $e;
         }
     }
     public function  AddSubject($kuerzel,$bez){
@@ -67,7 +71,9 @@ class ToDoList
             $db = null;
             echo("Everything's fine");
         } catch (PDOException $e) {
+            echo "AddSubject: ";
             echo $e->getMessage();
+            echo $e;
         }
     }
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
@@ -78,25 +84,83 @@ class ToDoList
             $statement = $db->prepare("INSERT INTO todo (fach, aufgabe,) VALUES (?,?,?);");
             $statement -> execute ( array ( "'".$kuerzel ."'", "'".$bez ."'" ) ) ;
             $db = null;
-            echo("Everything's fine");
+            return $allSubjects;
         } catch (PDOException $e) {
+            echo "AddToDo: ";
             echo $e->getMessage();
+            echo $e;
+        }
+        return false;
+    }
+
+    /**
+     * @param ToDo $todo das Todo zum speichern
+     * @return bool false, bei Fehler
+     */
+    public function saveToDo(ToDo $todo) {
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $stmt = $db->prepare("SELECT * FROM todo WHERE fach = ? AND aufgabe = ?");
+            $stmt->execute([$todo->getFach(),$todo->getBezeichnung()]);
+            if ($stmt->fetch() != false) {
+                // this To_do exists => UPDATE
+                $stmt = $db->prepare("UPDATE todo SET gemacht = :gemacht AND deadline = :deadline WHERE aufgabe = :aufgabe AND fach = :fach");
+            }
+            else {
+                // this To_do doesnt exist => INSERT INTO
+                $stmt = $db->prepare("INSERT INTO todo (aufgabe, fach, gemacht, deadline) VALUES (:aufgabe, :fach, :gemacht, :deadline)");
+            }
+            $stmt->execute([':aufgabe'=>$todo->getFach(),':fach'=>$todo->getFach(),':gemacht'=>$todo->isDone(),':deadline'=>$todo->isOverdue()]);
+            $db = null;
+            return true;
+        } catch (PDOException $e) {
+            echo "saveToDo: ";
+            echo $e->getMessage();
+            echo $e;
+            return false;
         }
     }
+
+    /**
+     * @return array|bool all Fach-Objects or false
+     */
     public function getAllSubjects(){
         try {
             // Datenbank verbinden
             $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
-            $db->exec("SELECT fach, aufgabek, gemacht, deadline FROM todo;");
+            $data = $db->query("SELECT fachBez, fachKuerzel FROM fach;")->fetchAll();
+            $allSubjects = array();
+            foreach ($data as $row) {
+                $allToDos[] = new Fach($data['fachKuerzel'],$data['fachBez']);
+            }
             $db = null;
             echo("Everything's fine");
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
-    public function getAllToDos(){
 
+    /**
+     * @return array|bool all TodoObjects or false
+     */
+    public function getAllToDos(){
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $data = $db->query("SELECT fach, aufgabe, gemacht, deadline FROM todo;")->fetchAll();
+            $allToDos = array();
+            foreach ($data as $row) {
+                $allToDos[] = new ToDo($data['aufgabe'],$data['fach'],$data['deadline'],$data['gemacht']);
+            }
+            $db = null;
+            return $allToDos;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;
     }
+
     public function getSubject($kuerzel){
 
     }
