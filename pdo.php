@@ -177,13 +177,15 @@ class ToDoList
             $data = $db->query("SELECT fachBez, fachKuerzel FROM fach;")->fetchAll();
             $allSubjects = array();
             foreach ($data as $row) {
-                $allToDos[] = new Fach($data['fachKuerzel'],$data['fachBez']);
+                $allSubjects[] = new Fach($data['fachKuerzel'],$data['fachBez']);
             }
             $db = null;
+            return $allSubjects;
             echo("Everything's fine");
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
+        return false;
     }
 
     /**
@@ -210,7 +212,20 @@ class ToDoList
      * @param $kuerzel . Das Kuerzel des Faches welches zurueck gegeben wird
      */
     public function getSubject($kuerzel){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
+            $data = $db->query("SELECT fachBez, fachKuerzel FROM fach WHERE fachKuerzel='".$kuerzel."';")->fetchAll();
+            $Subject = array();
+            foreach ($data as $row) {
+                $Subject[] = new Fach($data['fachKuerzel'],$data['fachBez']);
+            }
+            $db = null;
+            return $Subject;
+            echo("Everything's fine");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
@@ -219,6 +234,19 @@ class ToDoList
      * @param $aufgabe . Die Aufgabe welche erledigt werden muss
      */
     public function getToDo($fach,$aufgabe){
-
+        try {
+            // Datenbank verbinden
+            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
+            $data = $db->query("SELECT fach, aufgabe, gemacht, deadline FROM todo WHERE fach = '".$fach."' AND aufgabe = '".$aufgabe."' ;")->fetchAll();
+            $ToDo = array();
+            foreach ($data as $row) {
+                $ToDo[] = new ToDo($data['aufgabe'],$data['fach'],$data['deadline'],$data['gemacht']);
+            }
+            $db = null;
+            return $ToDo;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;
     }
 }
