@@ -1,6 +1,11 @@
 <?php
 require_once 'ToDo.php';
 
+/**
+ * Class ToDoList
+ * @author Anne Kreppenhofer, Felix Koch
+ * @version 2020-05-22
+ */
 class ToDoList
 {
     private $host;
@@ -12,6 +17,13 @@ class ToDoList
         PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
     ];
+
+    /**
+     * @param $host
+     * @param $dbname
+     * @param $user
+     * @param $password
+     */
     public function setup($host, $dbname, $user, $password)
     {
         $this->host = $host;
@@ -38,6 +50,10 @@ class ToDoList
             echo $e;
         }
     }
+
+    /**
+     * Fuegt alle Faecher hinzu, welche wir am TGM in der 3. IT haben
+     */
     public function AddAllSubjects(){
         try {
             // Datenbank verbinden
@@ -54,6 +70,7 @@ class ToDoList
             $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('INFI', 'Informatik und Informationssysteme ');");
             $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('RK', 'Religion Katholisch ');");
             $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('SEW', 'Softwareentwicklung ');");
+            $db->exec("INSERT INTO fach (fachKuerzel, fachBez) VALUES ('ITP', 'Informationstechnische Projekte ');");
             $db = null;
             echo("Everything's fine");
         } catch (PDOException $e) {
@@ -62,6 +79,12 @@ class ToDoList
             echo $e;
         }
     }
+
+    /**
+     * Fuegt eine neues Fach hinzu mit seinem Kuerzel und seiner Bezeichnung
+     * @param $kuerzel . das Kuerzel des Faches
+     * @param $bez . Die Bezeichnung des Faches
+     */
     public function  AddSubject($kuerzel,$bez){
         try {
             // Datenbank verbinden
@@ -76,13 +99,21 @@ class ToDoList
             echo $e;
         }
     }
+
+    /**
+     * Fuegt ein neues Todo in der Datenbank hinzu
+     * @param $fach . Das Fach in dem die Aufgabe erledigt werden muss
+     * @param $aufgabe . Die Aufgabe welche erldigt werden muss
+     * @param $gemacht . Ob die Aufgabe bereits gemacht wurde (true/false)
+     * @param $deadline . Die Deadline wann die Aufagbe fertig sein muss (DATE)
+     * @return bool
+     */
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
         try {
             // Datenbank verbinden
             $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
-            // TODO statement ist noch nicht fertig
-            $statement = $db->prepare("INSERT INTO todo (fach, aufgabe,) VALUES (?,?,?);");
-            $statement -> execute ( array ( "'".$kuerzel ."'", "'".$bez ."'" ) ) ;
+            $statement = $db->prepare("INSERT INTO todo (fach, aufgabe, gemacht, deadline) VALUES (?,?,?,?);");
+            $statement -> execute ( array ( "'".$fach ."'", "'".$aufgabe ."'" , "'".$gemacht ."'", "'".$deadline ."'") ) ;
             $db = null;
             return $allSubjects;
         } catch (PDOException $e) {
@@ -160,10 +191,19 @@ class ToDoList
         }
         return false;
     }
-
+    /**
+     * Gibt ein Fach zurueck
+     * @param $kuerzel . Das Kuerzel des Faches welches zurueck gegeben wird
+     */
     public function getSubject($kuerzel){
 
     }
+
+    /**
+     * Gibt ein Todo zurueck
+     * @param $fach . Das Fach in dem das ToDo gemacht werden soll
+     * @param $aufgabe . Die Aufgabe welche erledigt werden muss
+     */
     public function getToDo($fach,$aufgabe){
 
     }
