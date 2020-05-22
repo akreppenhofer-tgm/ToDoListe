@@ -22,18 +22,6 @@ require_once 'Fach.php';?>
 <body>
 <h1>ToDo-Liste: Anzeigen</h1>
 <hr>
-<form method="post" action="showTodo.php">
-    <label for="sub">Nach Fächern filtern: </label>
-    <br>
-    <br>
-    <select id="sub" name="subjects" multiple="multiple">
-        <option value="$fachKuerzel">$fachBezeichnung</option>
-        <?php
-
-        ?>
-    </select>
-</form>
-<hr>
 
 <form method="post" action="updateTodos.php">
     <table>
@@ -46,9 +34,27 @@ require_once 'Fach.php';?>
         <tr>
             <td>$fach</td>
             <td>$todoBez</td>
-            <td class="tooLate">$deadline</td>
-            <td><input type="checkbox" name="$fach+#+$bez" checked></td>
+            <td class="tooLate" name="deadLine_">$deadline</td>
+            <td><input type="checkbox" name="gemacht_$fach+#+$bez" checked></td>
         </tr>
+        <?php
+            $list = new ToDoList();
+            $list->setup("localhost","test","testuser","test1234");
+            $todos = $list->getAllToDos();
+            foreach ($todos as $todo) {
+                echo '<tr>'
+                . "<td>$todo->getFach()</td>"
+                . "<td>$todo->getBezeichnung()</td>"
+                . '<td class="';
+                if ($todo->isOverdue()) echo 'tooLate';
+                else if ($todo->isDone()) echo 'finnished';
+                echo '">';
+                echo "$todo->getDeadline()</td>".
+                     "<td><input  type='checkbox'";
+                if($todo->isDone()) echo 'checked';
+                echo "></td></tr>";
+            }
+            ?>
     </table>
 
 </form>
