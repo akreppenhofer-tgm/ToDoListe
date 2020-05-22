@@ -48,5 +48,13 @@ class ToDo
         else return false;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getDeadline()
+    {
+        return $this->deadline;
+    }
+
 
 }
