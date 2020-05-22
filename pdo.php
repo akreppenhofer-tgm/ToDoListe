@@ -55,6 +55,9 @@ class ToDoList
 
     public function generateSampleTodos() {
         $this->saveToDo(new ToDo("Finnish MEDT","MEDT","2020-05-23",0));
+        $this->saveToDo(new ToDo("Finnish Reli","RK","2020-05-29",1));
+        $this->saveToDo(new ToDo("Start M7","AM","2020-05-10",0));
+        $this->saveToDo(new ToDo("Start M5","AM","2020-05-05",1));
     }
 
     /**
