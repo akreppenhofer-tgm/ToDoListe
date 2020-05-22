@@ -43,20 +43,19 @@ require_once 'Fach.php';?>
             $todos = $list->getAllToDos();
             foreach ($todos as $todo) {
                 echo '<tr>'
-                . "<td>$todo->getFach()</td>"
-                . "<td>$todo->getBezeichnung()</td>"
+                . "<td>".$todo->getFach()."</td>"
+                . "<td>".$todo->getBezeichnung()."</td>"
                 . '<td class="';
                 if ($todo->isOverdue()) echo 'tooLate';
                 else if ($todo->isDone()) echo 'finnished';
                 echo '">';
-                echo "$todo->getDeadline()</td>".
+                echo $todo->getDeadline()."</td>".
                      "<td><input  type='checkbox'";
                 if($todo->isDone()) echo 'checked';
                 echo "></td></tr>";
             }
             ?>
     </table>
-
 </form>
 </body>
 </html>

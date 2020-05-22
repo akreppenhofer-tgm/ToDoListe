@@ -13,7 +13,7 @@ class ToDoList
     private $user;
     private $password;
     private $dcs;
-    private static $options = [
+    private $options = [
         PDO::ATTR_EMULATE_PREPARES => false, // echte Prepared Statements ermöglichen
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Exceptions für Nicht-Connection-Fehler einschalten
     ];
@@ -30,10 +30,10 @@ class ToDoList
         $this->dbname = $dbname;
         $this->user = $user;
         $this->password = $password;
-        $dcs = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+        $dcs = "mysql:host=$host;charset=utf8mb4";
         try {
             // Datenbank verbinden
-            $db = new PDO($dcs, $user, $password, self::$options);
+            $db = new PDO($dcs, $user, $password, $this->options);
             // Datenbank erstellen
             $db->exec("DROP DATABASE IF EXISTS " . $dbname . ";");
             $db->exec("CREATE DATABASE " . $dbname . ";");
@@ -43,12 +43,18 @@ class ToDoList
              // Datenbankverbindung schließen
             $db = null;
             $this->dcs = "mysql:host=$host;dbname=$this->dbname;charset=utf8mb4";
-            echo("Everything's fine");
+
+            $this->addAllSubjects();
+            $this->generateSampleTodos();
         } catch (PDOException $e) {
             echo "setup: ";
             echo $e->getMessage();
             echo $e;
         }
+    }
+
+    public function generateSampleTodos() {
+        $this->saveToDo(new ToDo("Finnish MEDT","MEDT","2020-05-23",0));
     }
 
     /**
@@ -111,7 +117,7 @@ class ToDoList
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
             $statement = $db->prepare("INSERT INTO todo (fach, aufgabe, gemacht, deadline) VALUES (?,?,?,?);");
             $statement -> execute ( array ( "'".$fach ."'", "'".$aufgabe ."'" , "'".$gemacht ."'", "'".$deadline ."'") ) ;
             $db = null;
@@ -141,7 +147,7 @@ class ToDoList
                 // this To_do doesnt exist => INSERT INTO
                 $stmt = $db->prepare("INSERT INTO todo (aufgabe, fach, gemacht, deadline) VALUES (:aufgabe, :fach, :gemacht, :deadline)");
             }
-            $stmt->execute([':aufgabe'=>$todo->getFach(),':fach'=>$todo->getFach(),':gemacht'=>$todo->isDone(),':deadline'=>$todo->isOverdue()]);
+            $stmt->execute([':aufgabe'=>$todo->getBezeichnung(),':fach'=>$todo->getFach(),':gemacht'=>$todo->isDone(),':deadline'=>$todo->getDeadline()]);
             $db = null;
             return true;
         } catch (PDOException $e) {
@@ -167,7 +173,7 @@ class ToDoList
     public function getAllSubjects(){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
             $data = $db->query("SELECT fachBez, fachKuerzel FROM fach;")->fetchAll();
             $allSubjects = array();
             foreach ($data as $row) {
@@ -186,11 +192,11 @@ class ToDoList
     public function getAllToDos(){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
+            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
             $data = $db->query("SELECT fach, aufgabe, gemacht, deadline FROM todo;")->fetchAll();
             $allToDos = array();
             foreach ($data as $row) {
-                $allToDos[] = new ToDo($data['aufgabe'],$data['fach'],$data['deadline'],$data['gemacht']);
+                $allToDos[] = new ToDo($row['aufgabe'],$row['fach'],$row['deadline'],$row['gemacht']);
             }
             $db = null;
             return $allToDos;
