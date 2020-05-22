@@ -115,7 +115,7 @@ class ToDoList
      * @param $aufgabe . Die Aufgabe welche erldigt werden muss
      * @param $gemacht . Ob die Aufgabe bereits gemacht wurde (true/false)
      * @param $deadline . Die Deadline wann die Aufagbe fertig sein muss (DATE)
-     * @return bool
+     * @return bool false on error
      */
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
         try {
@@ -125,11 +125,9 @@ class ToDoList
             $statement -> execute ( array ( "'".$fach ."'", "'".$aufgabe ."'" , "'".$gemacht ."'", "'".$deadline ."'") ) ;
             $db = null;
         } catch (PDOException $e) {
-            echo "AddToDo: ";
             echo $e->getMessage();
-            echo $e;
+            return false;
         }
-        return false;
     }
 
     /**
