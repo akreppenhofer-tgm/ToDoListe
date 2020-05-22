@@ -111,11 +111,10 @@ class ToDoList
     public function AddToDo($fach,$aufgabe,$gemacht,$deadline){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
             $statement = $db->prepare("INSERT INTO todo (fach, aufgabe, gemacht, deadline) VALUES (?,?,?,?);");
             $statement -> execute ( array ( "'".$fach ."'", "'".$aufgabe ."'" , "'".$gemacht ."'", "'".$deadline ."'") ) ;
             $db = null;
-            return $allSubjects;
         } catch (PDOException $e) {
             echo "AddToDo: ";
             echo $e->getMessage();
