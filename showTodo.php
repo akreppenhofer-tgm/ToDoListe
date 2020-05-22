@@ -23,7 +23,6 @@ require_once 'Fach.php';?>
 <h1>ToDo-Liste: Anzeigen</h1>
 <hr>
 
-<form method="post" action="updateTodos.php">
     <table>
         <tr>
             <th>Fach</th>
@@ -56,6 +55,5 @@ require_once 'Fach.php';?>
             }
             ?>
     </table>
-</form>
 </body>
 </html>

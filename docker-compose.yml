@@ -1,7 +1,8 @@
 version: '2'
 services:
   webserver:
-    image: phpstorm/php-71-apache-xdebug-26
+    image: phpstorm/php-71-apache-xdebug
+    command: docker-php-ext-install pdo_mysql
     ports:
       - "80:80"
     volumes:
