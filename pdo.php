@@ -123,12 +123,21 @@ class ToDoList
     }
 
     /**
+     * @param $todos an array of TODOs to save
+     */
+    public function saveToDos($todos) {
+        foreach ($todos as $todo) {
+            $this->saveToDo($todo);
+        }
+    }
+
+    /**
      * @return array|bool all Fach-Objects or false
      */
     public function getAllSubjects(){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
             $data = $db->query("SELECT fachBez, fachKuerzel FROM fach;")->fetchAll();
             $allSubjects = array();
             foreach ($data as $row) {
@@ -147,7 +156,7 @@ class ToDoList
     public function getAllToDos(){
         try {
             // Datenbank verbinden
-            $db = new PDO($this->dcs, $this->user, $this->password, $this->options);
+            $db = new PDO($this->dcs, $this->user, $this->password, self::$options);
             $data = $db->query("SELECT fach, aufgabe, gemacht, deadline FROM todo;")->fetchAll();
             $allToDos = array();
             foreach ($data as $row) {
